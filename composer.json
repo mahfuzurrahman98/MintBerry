@@ -1,0 +1,16 @@
+{
+    "name": "mahfuz/scandiweb-test",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Scandiweb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mahfuzurrahman98",
+            "email": "mdmahfuzurrahmanarif@gmail.com"
+        }
+    ],
+    "require": {}
+}
