@@ -6,3 +6,7 @@ function dd($data) {
   echo '</pre>';
   die();
 }
+
+function env($key, $default = null) {
+  return !$_ENV[$key] ? $default : $_ENV[$key];
+}
