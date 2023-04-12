@@ -2,30 +2,105 @@
 
 namespace MintBerry\App\Controllers;
 
-// require __DIR__ . '/../../Core/JSONResponse.php';
-
 use MintBerry\Core\Request;
 use MintBerry\Core\JSONResponse;
+use MintBerry\App\Models\Product;
 
 class ProductController {
   use JSONResponse;
+  protected $model;
 
-  private $request;
 
   public function __construct() {
-    $this->request = new Request();
+    $this->model = new Product();
   }
+
 
   public function index() {
-    $this->send(200, 'ProductController@index', $this->request->uri());
+    try {
+      $this->send(200, 'ProductController@index', $this->model->all());
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
   }
+
 
   public function show() {
-    echo 'ProductController@show';
+    $request = new Request();
+    
+    try {
+      if (!$request->hasQueryParam('id')) {
+        $this->send(400, 'Missing id query parameter');
+      }
+
+      $id = $request->getQueryParam('id');
+      $data = $this->model->find($id);
+
+      if (!$data) {
+        $this->send(404, 'Product not found');
+      }
+
+      $this->send(200, 'ProductController@index', $data);
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
   }
 
+
   public function store() {
-    dd($this->request);
-    echo 'ProductController@store';
+    $request = new Request();
+
+    try {
+      $product = $this->model->create($request->getBody());
+      $this->send(200, 'Product created successfully', $product);
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
+  }
+
+
+  public function update() {
+    $request = new Request();
+
+    try {
+      if (!$request->hasQueryParam('id')) {
+        $this->send(400, 'Missing id query parameter');
+      }
+
+      $id = $request->getQueryParam('id');
+      $data = $this->model->find($id);
+
+      if (!$data) {
+        $this->send(404, 'Product not found');
+      }
+
+      $this->model->update($id, $request->getBody());
+      $this->send(200, 'Product updated successfully', $request->getBody());
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
+  }
+  
+  
+  public function delete() {
+    $request = new Request();
+
+    try {
+      if (!$request->hasQueryParam('id')) {
+        $this->send(400, 'Missing id query parameter');
+      }
+
+      $id = $request->getQueryParam('id');
+      $data = $this->model->find($id);
+
+      if (!$data) {
+        $this->send(404, 'Product not found');
+      }
+
+      $this->model->delete($id);
+      $this->send(200, 'Product deleted successfully');
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
   }
 }

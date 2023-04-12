@@ -6,72 +6,82 @@ use PDO;
 use PDOException;
 
 class Database {
-  private $host = $config['database']['host'];
-  private $user = $config['database']['user'];
-  private $pass = $config['database']['pass'];
-  private $dbname =  $config['database']['dbname'];
+  private static $instance = null;
+  private $pdo;
 
-  private $dbh;
-  private $stmt;
-  private $error;
+  private function __construct() {
+    $host = env('DB_HOST');
+    $port = env('DB_PORT', null);
+    $dbname = env('DB_DATABASE');
+    $user = env('DB_USERNAME');
+    $pass = env('DB_PASSWORD');
 
-  public function __construct() {
-    // Set DSN
-    $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-    // Set options 
+    $port = $port ? ':' . $port : '';
+    $dsn = 'mysql:host=' . $host . $port . ';dbname=' . $dbname;
+
     $options = array(
       PDO::ATTR_PERSISTENT => true,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
-    // Create a new PDO instance
+
     try {
-      $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+      $this->pdo = new PDO($dsn, $user, $pass, $options);
+    } catch (PDOException $e) {
+      http_response_code(500);
+      echo json_encode([
+        'success' => false,
+        'status' => 500,
+        'message' => $e->getMessage(),
+        'data' => $host
+      ]);
+      die;
     }
-    // Catch any errors
-    catch (PDOException $e) {
-      $this->error = $e->getMessage();
+  }
+
+  public static function getInstance() {
+    if (self::$instance === null) {
+      self::$instance = new Database();
     }
+    return self::$instance;
   }
 
-  public function query($query) {
-    $this->stmt = $this->dbh->prepare($query);
-  }
-
-  public function bind($param, $value, $type = null) {
-    if (is_null($type)) {
-      switch (true) {
-        case is_int($value):
-          $type = PDO::PARAM_INT;
-          break;
-        case is_bool($value):
-          $type = PDO::PARAM_BOOL;
-          break;
-        case is_null($value):
-          $type = PDO::PARAM_NULL;
-          break;
-        default:
-          $type = PDO::PARAM_STR;
-      }
+  public function bindParams($statement, $params) {
+    foreach ($params as $key => $value) {
+      // echo $key . ' => ' . $value . ' | ';
+      $statement->bindParam($key, $value);
     }
-
-    $this->stmt->bindValue($param, $value, $type);
+    // die;
+    return $statement;
   }
 
-  public function execute() {
-    return $this->stmt->execute();
+  public function execute($query, $params = []) {
+    $statement = $this->pdo->prepare($query);
+    if (!empty($params)) {
+      $statement = $this->bindParams($statement, $params);
+    }
+    // dd($statement);
+
+    // dd($statement->debugDumpParams());
+    $statement->execute();
+    return $statement;
   }
 
-  public function resultSet() {
-    $this->execute();
-    return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+  public function getLastInsertId() {
+    return $this->pdo->lastInsertId();
   }
 
-  public function single() {
-    $this->execute();
-    return $this->stmt->fetch(PDO::FETCH_OBJ);
+  public function rowCount($query, $params = []) {
+    $statement = $this->execute($query, $params);
+    return $statement->rowCount();
   }
 
-  public function rowCount() {
-    return $this->stmt->rowCount();
+  public function fetch($query, $params = []) {
+    $statement = $this->execute($query, $params);
+    return $statement->fetch(PDO::FETCH_OBJ);
+  }
+
+  public function fetchAll($query, $params = []) {
+    $statement = $this->execute($query, $params);
+    return $statement->fetchAll(PDO::FETCH_OBJ);
   }
 }
