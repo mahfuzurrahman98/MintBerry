@@ -4,12 +4,20 @@ namespace Scandiweb\App\Controllers;
 
 // require __DIR__ . '/../../Core/JSONResponse.php';
 
+use Scandiweb\Core\Request;
 use Scandiweb\Core\JSONResponse;
 
 class ProductController {
   use JSONResponse;
+
+  private $request;
+
+  public function __construct() {
+    $this->request = new Request();
+  }
+
   public function index() {
-    $this->send(200, 'ProductController@index', array('test' => 'test'));
+    $this->send(200, 'ProductController@index', $this->request->queryParams);
   }
 
   public function show() {
