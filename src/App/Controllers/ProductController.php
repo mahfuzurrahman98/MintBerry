@@ -17,10 +17,15 @@ class ProductController {
   }
 
   public function index() {
-    $this->send(200, 'ProductController@index', $this->request->queryParams);
+    $this->send(200, 'ProductController@index', $this->request->uri());
   }
 
   public function show() {
     echo 'ProductController@show';
+  }
+
+  public function store() {
+    dd($this->request);
+    echo 'ProductController@store';
   }
 }
