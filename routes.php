@@ -1,6 +1,6 @@
 <?php
 
-use Scandiweb\Core\Router;
+use MintBerry\Core\Router;
 
 $router = new Router();
 

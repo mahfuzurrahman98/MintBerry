@@ -1,11 +1,11 @@
 <?php
 
-namespace Scandiweb\App\Controllers;
+namespace MintBerry\App\Controllers;
 
 // require __DIR__ . '/../../Core/JSONResponse.php';
 
-use Scandiweb\Core\Request;
-use Scandiweb\Core\JSONResponse;
+use MintBerry\Core\Request;
+use MintBerry\Core\JSONResponse;
 
 class ProductController {
   use JSONResponse;

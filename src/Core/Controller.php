@@ -1,6 +1,6 @@
 <?php
 
-namespace Scandiweb\App\Core;
+namespace MintBerry\App\Core;
 
 
 class Controller {

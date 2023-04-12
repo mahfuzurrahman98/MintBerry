@@ -1,6 +1,6 @@
 <?php
 
-namespace Scandiweb\Core;
+namespace MintBerry\Core;
 
 class Router {
   protected $routes = [];
@@ -53,7 +53,7 @@ class Router {
         require_once realpath(__DIR__ . '/../') . '/App/Controllers/' . $controllerName . '.php';
 
         // Create an instance of the controller
-        $className = 'Scandiweb\\App\\Controllers\\' . $controllerName;
+        $className = 'MintBerry\\App\\Controllers\\' . $controllerName;
         $controller = new $className();
 
         // Call the action method on the controller instance

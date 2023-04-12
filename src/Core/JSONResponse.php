@@ -1,6 +1,6 @@
 <?php
 
-namespace Scandiweb\Core;
+namespace MintBerry\Core;
 
 trait JSONResponse {
   public static function send($statusCode, $message, $data = null) {
