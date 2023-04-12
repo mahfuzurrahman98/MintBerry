@@ -9,23 +9,23 @@ class Session {
     }
   }
 
-  public function put($key, $value) {
+  public static function put($key, $value) {
     $_SESSION[$key] = $value;
   }
 
-  public function has($key) {
+  public static function has($key) {
     return isset($_SESSION[$key]);
   }
 
-  public function get($key) {
+  public static function get($key) {
     return $_SESSION[$key];
   }
 
-  public function forget($key) {
+  public static function forget($key) {
     unset($_SESSION[$key]);
   }
 
-  public function destroy() {
+  public static function destroy() {
     session_destroy();
   }
 }
