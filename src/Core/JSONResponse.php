@@ -8,7 +8,7 @@ trait JSONResponse {
     http_response_code($statusCode);
 
     $response = [
-      'success' => $statusCode >= 200 && $statusCode < 300,
+      'success' => !($statusCode >= 400 && $statusCode < 600),
       'status' => $statusCode,
       'message' => $message
     ];
