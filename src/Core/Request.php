@@ -16,7 +16,7 @@ class Request {
     $this->queryParams = $_GET;
 
     // if the content type is application/json then decode the body otherwise use $_POST
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
+    if (isset($_SERVER['CONTENT_TYPE']) && strtolower($_SERVER['CONTENT_TYPE']) === 'application/json') {
       $this->body = json_decode(file_get_contents('php://input'), true);
     } else {
       $this->body = $_POST;
