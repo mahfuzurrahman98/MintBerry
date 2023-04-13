@@ -13,13 +13,13 @@ class Request {
   private $files = [];
 
   public  function __construct() {
-    $this->queryParams = $_GET;
+    $this->queryParams = (object)$_GET;
 
     // if the content type is application/json then decode the body otherwise use $_POST
     if (isset($_SERVER['CONTENT_TYPE']) && strtolower($_SERVER['CONTENT_TYPE']) === 'application/json') {
-      $this->body = json_decode(file_get_contents('php://input'), true);
+      $this->body = (object)json_decode(file_get_contents('php://input'), true);
     } else {
-      $this->body = $_POST;
+      $this->body = (object)$_POST;
     }
 
     $this->uri = trim(
@@ -34,9 +34,9 @@ class Request {
 
     $this->method = $_SERVER['REQUEST_METHOD'];
 
-    $this->headers = getallheaders();
+    $this->headers = (object)getallheaders();
 
-    $this->cookies = $_COOKIE;
+    $this->cookies = (object)$_COOKIE;
 
     $this->files = $_FILES;
   }
@@ -64,11 +64,11 @@ class Request {
   }
 
   public function hasQueryParam($key) {
-    return isset($this->queryParams[$key]);
+    return isset($this->queryParams->$key);
   }
 
   public function getQueryParam($key) {
-    return $this->queryParams[$key];
+    return $this->queryParams->$key;
   }
 
 
@@ -78,11 +78,11 @@ class Request {
   }
 
   public function hasBodyParam($key) {
-    return isset($this->body[$key]);
+    return isset($this->body->$key);
   }
 
   public function getBodyParam($key) {
-    return $this->body[$key];
+    return $this->body->$key;
   }
 
   // files
@@ -105,11 +105,11 @@ class Request {
   }
 
   public function hasHeader($key) {
-    return isset($this->headers[$key]);
+    return isset($this->headers->$key);
   }
 
   public function getHeader($key) {
-    return $this->headers[$key];
+    return $this->headers->$key;
   }
 
 
@@ -119,10 +119,10 @@ class Request {
   }
 
   public function getCookie($key) {
-    return $this->cookies[$key];
+    return $this->cookies->$key;
   }
 
   public function hasCookie($key) {
-    return isset($this->cookies[$key]);
+    return isset($this->cookies->$key);
   }
 }

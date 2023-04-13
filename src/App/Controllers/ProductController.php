@@ -49,12 +49,13 @@ class ProductController {
 
   public function store() {
     $request = new Request();
+    // dd($request->getBody()['name']);
 
     try {
       $product = $this->model->create($request->getBody());
       $this->send(200, 'Product created successfully', $product);
     } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
+      $this->send(500, $e->getTraceAsString());
     }
   }
 

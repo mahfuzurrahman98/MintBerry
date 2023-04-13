@@ -21,9 +21,9 @@ class Model {
     $columns = '';
     $namedValues = '';
 
-    // check if the table has a created_at column
-    if (!array_key_exists('created_at', $data)) {
-      $data['created_at'] = date('Y-m-d H:i:s');
+    // check if it has a property called created_at
+    if (!property_exists($data, 'created_at')) {
+      $data->created_at = date('Y-m-d H:i:s');
     }
 
     foreach ($data as $key => $value) {
@@ -35,7 +35,7 @@ class Model {
     $namedValues = rtrim($namedValues, ',');
 
     $query = "INSERT INTO {$this->table}($columns) VALUES($namedValues)";
-    
+
     $this->db->execute($query, $data);
     return $this->find($this->db->getLastInsertId());
   }
@@ -82,7 +82,7 @@ class Model {
     $setClause = rtrim($setClause, ',');
 
     $query = "UPDATE {$this->table} SET $setClause WHERE id=:id";
-    
+
     $data['id'] = $id;
     $stmt = $this->db->execute($query, $data);
     return $this->find($id);
