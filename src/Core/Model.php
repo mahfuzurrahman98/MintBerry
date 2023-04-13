@@ -19,7 +19,7 @@ class Model {
   // create a new record
   public function create($data) {
     $columns = '';
-    $namedParams = '';
+    $namedValues = '';
 
     // check if the table has a created_at column
     if (!array_key_exists('created_at', $data)) {
@@ -28,15 +28,14 @@ class Model {
 
     foreach ($data as $key => $value) {
       $columns .= "$key,";
-      $namedParams .= ":$key,";
+      $namedValues .= ":$key,";
     }
 
     $columns = rtrim($columns, ',');
-    $namedParams = rtrim($namedParams, ',');
+    $namedValues = rtrim($namedValues, ',');
 
-
-    $query = "INSERT INTO {$this->table} ($columns) VALUES ($namedParams)";
-    // dd($query);
+    $query = "INSERT INTO {$this->table}($columns) VALUES($namedValues)";
+    
     $this->db->execute($query, $data);
     return $this->find($this->db->getLastInsertId());
   }
@@ -71,7 +70,7 @@ class Model {
 
 
   public function update($id, $data) {
-
+    // check if the table has a updated_at column
     if (!array_key_exists('updated_at', $data)) {
       $data['updated_at'] = date('Y-m-d H:i:s');
     }

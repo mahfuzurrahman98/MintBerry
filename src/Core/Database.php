@@ -45,23 +45,19 @@ class Database {
     return self::$instance;
   }
 
-  public function bindParams($statement, $params) {
-    foreach ($params as $key => $value) {
-      // echo $key . ' => ' . $value . ' | ';
-      $statement->bindParam($key, $value);
+  public function bindValues($statement, $values) {
+    foreach ($values as $key => $value) {
+      $statement->bindValue($key, $value);
     }
-    // die;
     return $statement;
   }
 
-  public function execute($query, $params = []) {
+  public function execute($query, $values = []) {
     $statement = $this->pdo->prepare($query);
-    if (!empty($params)) {
-      $statement = $this->bindParams($statement, $params);
+    if (!empty($values)) {
+      $statement = $this->bindValues($statement, $values);
     }
-    // dd($statement);
 
-    // dd($statement->debugDumpParams());
     $statement->execute();
     return $statement;
   }
@@ -70,18 +66,18 @@ class Database {
     return $this->pdo->lastInsertId();
   }
 
-  public function rowCount($query, $params = []) {
-    $statement = $this->execute($query, $params);
+  public function rowCount($query, $values = []) {
+    $statement = $this->execute($query, $values);
     return $statement->rowCount();
   }
 
-  public function fetch($query, $params = []) {
-    $statement = $this->execute($query, $params);
+  public function fetch($query, $values = []) {
+    $statement = $this->execute($query, $values);
     return $statement->fetch(PDO::FETCH_OBJ);
   }
 
-  public function fetchAll($query, $params = []) {
-    $statement = $this->execute($query, $params);
+  public function fetchAll($query, $values = []) {
+    $statement = $this->execute($query, $values);
     return $statement->fetchAll(PDO::FETCH_OBJ);
   }
 }
