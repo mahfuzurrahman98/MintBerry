@@ -40,7 +40,7 @@ class ProductController {
         $this->send(404, 'Product not found');
       }
 
-      $this->send(200, 'ProductController@index', $data);
+      $this->send(200, 'Product fetched successfully', $data);
     } catch (\Exception $e) {
       $this->send(500, $e->getMessage());
     }
