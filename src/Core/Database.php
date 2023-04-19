@@ -1,6 +1,6 @@
 <?php
 
-namespace MintBerry\Core;
+namespace Scandiweb\Core;
 
 use PDO;
 use PDOException;
@@ -31,8 +31,7 @@ class Database {
       echo json_encode([
         'success' => false,
         'status' => 500,
-        'message' => $e->getMessage(),
-        'data' => $host
+        'message' => $e->getMessage()
       ]);
       die;
     }
@@ -79,5 +78,18 @@ class Database {
   public function fetchAll($query, $values = []) {
     $statement = $this->execute($query, $values);
     return $statement->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  // three more helper classes
+  public function beginTransaction() {
+    $this->pdo->beginTransaction();
+  }
+
+  public function commit() {
+    $this->pdo->commit();
+  }
+
+  public function rollBack() {
+    $this->pdo->rollBack();
   }
 }
