@@ -1,6 +1,6 @@
 <?php
 
-namespace Scandiweb\Core;
+namespace MintBerry\Core;
 
 use PDO;
 use PDOException;
