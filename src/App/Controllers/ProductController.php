@@ -5,8 +5,9 @@ namespace MintBerry\App\Controllers;
 use MintBerry\Core\Request;
 use MintBerry\Core\JSONResponse;
 use MintBerry\App\Models\Product;
+use MintBerry\Core\Controller;
 
-class ProductController {
+class ProductController extends Controller {
   use JSONResponse;
   protected $model;
 
@@ -17,17 +18,24 @@ class ProductController {
 
 
   public function index() {
-    try {
-      $this->send(200, 'ProductController@index', $this->model->all());
-    } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
-    }
+    // $request = new Request();
+    // try {
+    //   $this->send(200, 'ProductController@index', $this->model->all());
+    // } catch (\Exception $e) {
+    //   $this->send(500, $e->getMessage());
+    // }
+
+    $products = $this->model->all();
+
+    $this->render('products/index', [
+      'products' => $products
+    ]);
   }
 
 
   public function show() {
     $request = new Request();
-    
+
     try {
       if (!$request->hasQueryParam('id')) {
         $this->send(400, 'Missing id query parameter');
@@ -81,8 +89,8 @@ class ProductController {
       $this->send(500, $e->getMessage());
     }
   }
-  
-  
+
+
   public function delete() {
     $request = new Request();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace MintBerry\App\Core;
+namespace MintBerry\Core;
 
 
 class Controller {
@@ -9,7 +9,13 @@ class Controller {
     return new $model();
   }
 
-  protected function view($view, $data = []) {
-    require_once '../app/views/' . $view . '.php';
+  protected function render($view, $data = []) {
+    $file = BASE_PATH . '/src/App/views/' . $view . '.php';
+    if (file_exists($file)) {
+      extract($data);
+      require_once $file;
+    } else {
+      die('View does not exist');
+    }
   }
 }
