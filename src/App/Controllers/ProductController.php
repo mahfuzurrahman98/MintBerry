@@ -27,7 +27,7 @@ class ProductController extends Controller {
 
     $products = $this->model->all();
 
-    $this->render('products/index', [
+    $this->render('products.index', [
       'products' => $products
     ]);
   }

@@ -12,26 +12,27 @@ class Router {
       'action' => $action,
       'method' => $method,
     ];
+    return $this;
   }
 
   public function get($path, $controller, $action) {
-    $this->add($path, $controller, $action, 'GET');
+    return $this->add($path, $controller, $action, 'GET');
   }
 
   public function post($path, $controller, $action) {
-    $this->add($path, $controller, $action, 'POST');
+    return $this->add($path, $controller, $action, 'POST');
   }
 
   public function put($path, $controller, $action) {
-    $this->add($path, $controller, $action, 'PUT');
+    return $this->add($path, $controller, $action, 'PUT');
   }
 
   public function delete($path, $controller, $action) {
-    $this->add($path, $controller, $action, 'DELETE');
+    return $this->add($path, $controller, $action, 'DELETE');
   }
 
   public function patch($path, $controller, $action) {
-    $this->add($path, $controller, $action, 'PATCH');
+    return $this->add($path, $controller, $action, 'PATCH');
   }
 
   public function route() {
@@ -50,7 +51,8 @@ class Router {
         $action = $route['action'];
 
         // Require the controller file
-        require_once realpath(__DIR__ . '/../') . '/App/Controllers/' . $controllerName . '.php';
+        // require_once realpath(__DIR__ . '/../') . '/App/Controllers/' . $controllerName . '.php';
+        require_once BASE_PATH . '/src/App/Controllers/' . $controllerName . '.php';
 
         // Create an instance of the controller
         $className = 'MintBerry\\App\\Controllers\\' . $controllerName;

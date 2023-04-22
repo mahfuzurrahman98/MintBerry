@@ -10,6 +10,7 @@ class Controller {
   }
 
   protected function render($view, $data = []) {
+    $view = str_replace('.', '/', $view);
     $file = BASE_PATH . '/src/App/views/' . $view . '.php';
     if (file_exists($file)) {
       extract($data);
