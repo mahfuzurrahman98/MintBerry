@@ -7,11 +7,7 @@ trait JSONResponse {
     header('Content-Type: application/json');
     http_response_code($statusCode);
 
-    $response = [
-      'success' => !($statusCode >= 400 && $statusCode < 600),
-      'status' => $statusCode,
-      'message' => $message
-    ];
+    $response = ['message' => $message];
 
     if (is_array($data) && empty($data)) {
       $response['data'] = array();
