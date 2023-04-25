@@ -3,7 +3,11 @@
 namespace MintBerry\Core;
 
 class Router {
-  protected $routes = [];
+  protected $routes;
+
+  public function __construct() {
+    $this->routes = [];
+  }
 
   public function add($path, $controller, $action, $requestMethod) {
     $this->routes[] = [
@@ -125,5 +129,10 @@ class Router {
     http_response_code(404);
     echo json_encode(['message' => 'The requested method is not found']);
     return;
+  }
+
+  // create a destructor to run the route method
+  public function __destruct() {
+    $this->route();
   }
 }
