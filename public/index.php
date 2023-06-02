@@ -13,6 +13,7 @@ $dotenv->load();
 require BASE_PATH . '/src/Core/functions.php';
 
 ini_set('display_errors', env('APP_DEBUG'));
+ini_set('output_buffering', 4096);
 
 require BASE_PATH . '/src/App/helpers.php';
 require BASE_PATH . '/src/App/routes.php';
