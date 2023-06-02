@@ -1,24 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$products = [
+  "Product 1",
+  "Product 2",
+  "Product 3",
+];
+ob_start(); // Start output buffering
+?>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products</title>
-</head>
+<?php section('content', { ?>
+<ul>
+  <?php foreach ($products as $product) { ?>
+    <li><?php echo $product; ?></li>
+  <?php } ?>
+</ul>
 
-<body>
-  <h1>Products</h1>
-
-  <?php foreach ($products as $product) : ?>
-    <div>
-      <h2><?= $product->name ?></h2>
-      <p><?= $product->sku ?></p>
-      <p><?= $product->price ?></p>
-    </div>
-  <?php endforeach; ?>
-
-</body>
-
-</html>
+<?php }) ?>
