@@ -57,7 +57,13 @@ class ProductController extends Controller {
 
   public function store() {
     $request = new Request();
-    // dd($request->getBody()['name']);
+
+    $rules = [
+      'sku' => 'required|min:3|max:255|unique:products',
+      'name' => 'required|min:3|max:255',
+      'price' => 'required|numeric',
+      'description' => 'required|min:3|max:255'
+    ];
 
     try {
       $product = $this->model->create($request->getBody());

@@ -5,6 +5,7 @@ namespace MintBerry\Core;
 
 class Controller {
   protected function model($model) {
+    echo 'Model: ' . $model;
     require_once '../app/models/' . $model . '.php';
     return new $model();
   }

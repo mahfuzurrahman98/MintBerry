@@ -10,14 +10,16 @@ class Database {
   private $pdo;
 
   private function __construct() {
+    $dbtype = env('DB_CONNECTION');
     $host = env('DB_HOST');
     $port = env('DB_PORT', null);
     $dbname = env('DB_DATABASE');
     $user = env('DB_USERNAME');
     $pass = env('DB_PASSWORD');
 
-    $port = $port ? ':' . $port : '';
-    $dsn = 'mysql:host=' . $host . $port . ';dbname=' . $dbname;
+    $port = $port ? ":$port" : '';
+    $dsn = "$dbtype:host=$host$port;dbname=$dbname";
+    // echo $dsn;
 
     $options = array(
       PDO::ATTR_PERSISTENT => true,

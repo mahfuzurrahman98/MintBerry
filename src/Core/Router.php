@@ -63,10 +63,23 @@ class Router {
 
   public function route() {
     $uri = parse_url($_SERVER['REQUEST_URI']);
+
+    if (isset($uri['path'])) {
+      $path = $uri['path'];
+    } else {
+      http_response_code(404);
+      echo json_encode(['message' => 'The requested resource is not found']);
+      return;
+    }
+
+    if (env('APP_ROOT') != '') {
+      $path = str_replace('/' . env('APP_ROOT'), '', $path);
+    }
+
     $methodMatch = true;
 
     foreach ($this->routes as $route) {
-      if ($uri['path'] === $route['path']) {
+      if ($path === $route['path']) {
 
         if ($_SERVER['REQUEST_METHOD'] !== $route['requestMethod']) {
           $methodMatch = false;
@@ -127,7 +140,7 @@ class Router {
     }
 
     http_response_code(404);
-    echo json_encode(['message' => 'The requested method is not found']);
+    echo json_encode(['message' => 'The requested resource is not found']);
     return;
   }
 
