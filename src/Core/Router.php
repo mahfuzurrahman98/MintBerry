@@ -79,11 +79,19 @@ class Router {
     $methodMatch = true;
 
     foreach ($this->routes as $route) {
+      // Check if the route matches the current request
       if ($path === $route['path']) {
-
-        if ($_SERVER['REQUEST_METHOD'] !== $route['requestMethod']) {
-          $methodMatch = false;
-          continue;
+        // Check if the route method matches
+        if (isset($_SERVER['_method']) && trim($_SERVER['_method']) != '') {
+          if (trim($_SERVER['_method']) !== $route['requestMethod']) {
+            $methodMatch = false;
+            continue;
+          }
+        } else {
+          if ($_SERVER['REQUEST_METHOD'] !== $route['requestMethod']) {
+            $methodMatch = false;
+            continue;
+          }
         }
 
         // Check if the route has any middleware
