@@ -13,11 +13,16 @@ class Controller {
   protected function render($view, $data = []) {
     $view = str_replace('.', '/', $view);
     $file = BASE_PATH . '/src/App/views/' . $view . '.php';
+
     if (file_exists($file)) {
       extract($data);
       require_once $file;
     } else {
       die('View does not exist');
     }
+  }
+
+  public function __destruct() {
+    Session::forget('csrf_token');
   }
 }

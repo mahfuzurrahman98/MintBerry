@@ -6,6 +6,7 @@ use MintBerry\Core\Request;
 use MintBerry\Core\JSONResponse;
 use MintBerry\App\Models\Product;
 use MintBerry\Core\Controller;
+use MintBerry\Core\Session;
 
 class ProductController extends Controller {
   use JSONResponse;
@@ -54,6 +55,11 @@ class ProductController extends Controller {
     }
   }
 
+  public function postRreq() {
+    $request = new Request();
+    // echo 'csrf: ' . Session::get('csrf_token');
+    dd(Session::all());
+  }
 
   public function store() {
     $request = new Request();
@@ -117,5 +123,10 @@ class ProductController extends Controller {
     } catch (\Exception $e) {
       $this->send(500, $e->getMessage());
     }
+  }
+
+  public function test() {
+    // abort(500);
+    dd(Session::all());
   }
 }

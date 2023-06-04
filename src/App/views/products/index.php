@@ -1,17 +1,21 @@
-<?php
-$products = [
-  "Product 1",
-  "Product 2",
-  "Product 3",
-];
-ob_start(); // Start output buffering
-?>
+<!DOCTYPE html>
+<html lang="en">
 
-<?php section('content', { ?>
-<ul>
-  <?php foreach ($products as $product) { ?>
-    <li><?php echo $product; ?></li>
-  <?php } ?>
-</ul>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
 
-<?php }) ?>
+<body>
+  <form action="/post-req" method="POST">
+    <?php csrf_input() ?>
+    <input type="text" name="name">
+    <input type="text" name="price">
+    <input type="text" name="description">
+    <button type="submit">Submit</button>
+  </form>
+</body>
+
+</html>
