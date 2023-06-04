@@ -14,12 +14,25 @@ class Auth {
     $this->db = Database::getInstance();
   }
 
-  public static function login($email, $password) {
+  public static function attempt($email, $password) {
     $db = Database::getInstance();
     $stmt = $db->execute("SELECT * FROM users WHERE email=:email AND deleted_at IS NULL", ['email' => $email]);
     $data = $stmt->fetch(\PDO::FETCH_OBJ);
+
     if (Hash::verify($password, $data->password)) {
-      $_SESSION['user_id'] = $data->id;
+      $user = [];
+
+      $user['id'] = $data->id;
+      if (isset($data->name)) {
+        $user['name'] = $data->name;
+      }
+      if (isset($data->username)) {
+        $user['username'] = $data->username;
+      }
+      if (isset($data->email)) {
+        $user['email'] = $data->email;
+      }
+      $_SESSION['user'] = (object)$user;
       return true;
     }
     return false;
