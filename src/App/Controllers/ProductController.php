@@ -127,6 +127,9 @@ class ProductController extends Controller {
 
   public function test() {
     // abort(500);
-    dd(Session::all());
+    // Session::put('test', 'test');
+    // dd(Session::all());
+
+    $this->render('test');
   }
 }

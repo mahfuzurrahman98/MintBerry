@@ -42,4 +42,15 @@ class Session {
     session_destroy();
     self::$sessionStarted = false;
   }
+
+  public static function flush($key, $value = '') {
+    self::start();
+    if (isset($_SESSION[$key])) {
+      $value = $_SESSION[$key];
+      unset($_SESSION[$key]);
+      return $value;
+    } else {
+      return $value;
+    }
+  }
 }
