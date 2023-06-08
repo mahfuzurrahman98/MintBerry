@@ -12,6 +12,9 @@
             "email": "mdmahfuzurrahmanarif@gmail.com"
         }
     ],
+    "scripts": {
+        "start-dev-server": "php -S 127.0.0.1:4000 -t public"
+    },
     "require": {
         "vlucas/phpdotenv": "^5.5"
     }
