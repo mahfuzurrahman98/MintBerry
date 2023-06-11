@@ -19,18 +19,18 @@ class ProductController extends Controller {
 
 
   public function index() {
-    // $request = new Request();
-    // try {
-    //   $this->send(200, 'ProductController@index', $this->model->all());
-    // } catch (\Exception $e) {
-    //   $this->send(500, $e->getMessage());
-    // }
+    $request = new Request();
+    try {
+      $this->send(200, 'ProductController@index', $this->model->all());
+    } catch (\Exception $e) {
+      $this->send(500, $e->getMessage());
+    }
 
-    $products = $this->model->all();
+    // $products = $this->model->all();
 
-    $this->render('products.index', [
-      'products' => $products
-    ]);
+    // $this->render('products.index', [
+    //   'products' => $products
+    // ]);
   }
 
 
