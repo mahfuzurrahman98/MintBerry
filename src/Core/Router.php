@@ -4,12 +4,14 @@ namespace MintBerry\Core;
 
 class Router {
   protected $routes;
+  protected $prefixPath = '';
 
   public function __construct() {
     $this->routes = [];
   }
 
   public function add($path, $controller, $action, $requestMethod) {
+    $path = $this->prefixPath . $path;
     $this->routes[] = [
       'path' => $path,
       'controller' => $controller,
@@ -59,6 +61,13 @@ class Router {
     $names = is_array($names) ? $names : [$names];
     $this->routes[count($this->routes) - 1]['middlewares'] = $names;
     return $this;
+  }
+
+  public function prefix($prefixPath, $callback) {
+    $previousPrefix = $this->prefixPath;
+    $this->prefixPath = $previousPrefix . $prefixPath;
+    $callback($this);
+    $this->prefixPath = $previousPrefix;
   }
 
   public function route() {
