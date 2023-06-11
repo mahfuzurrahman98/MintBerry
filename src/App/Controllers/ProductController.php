@@ -58,7 +58,9 @@ class ProductController extends Controller {
   public function postRreq() {
     $request = new Request();
     // echo 'csrf: ' . Session::get('csrf_token');
-    dd(Session::all());
+    // dd(Session::all());
+    dd($request->getBody());
+    // dd($_POST);
   }
 
   public function store() {

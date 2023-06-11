@@ -9,13 +9,7 @@
 </head>
 
 <body>
-  <form action="/post-req" method="POST">
-    <?php csrf_input() ?>
-    <input type="text" name="name">
-    <input type="text" name="price">
-    <input type="text" name="description">
-    <button type="submit">Submit</button>
-  </form>
+
 </body>
 
 </html>

@@ -9,12 +9,20 @@
 </head>
 
 <body>
-  <?php
+  <form action="/post-req" method="POST">
+    <?php
 
-  // use MintBerry\Core\Session;
+    use MintBerry\Core\Session;
 
-  // dd(Session::flush('test'));
-  ?>
+    //csrf_input()
+    ?>
+    <input type="text" name="name">
+    <input type="text" name="price">
+    <input type="text" name="description">
+    <button type="submit">Submit</button>
+  </form>
+
+  <?= Session::get('_csrf_token') ?>
 </body>
 
 </html>
