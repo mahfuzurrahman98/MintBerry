@@ -5,6 +5,7 @@ namespace MintBerry\Core;
 class Router {
   protected $routes;
   protected $prefixPath = '';
+  protected $csrfProtection = true;
 
   public function __construct() {
     $this->routes = [];
@@ -22,45 +23,8 @@ class Router {
     return $this;
   }
 
-  public function get($path, $action) {
-    $arr = explode('@', trim($action));
-    $controller = $arr[0];
-    $method = $arr[1];
-    return $this->add($path, $controller, $method, 'GET');
-  }
-
-  public function post($path, $action) {
-    $arr = explode('@', trim($action));
-    $controller = $arr[0];
-    $method = $arr[1];
-    return $this->add($path, $controller, $method, 'POST');
-  }
-
-  public function put($path, $action) {
-    $arr = explode('@', trim($action));
-    $controller = $arr[0];
-    $method = $arr[1];
-    return $this->add($path, $controller, $method, 'PUT');
-  }
-
-  public function delete($path, $action) {
-    $arr = explode('@', trim($action));
-    $controller = $arr[0];
-    $method = $arr[1];
-    return $this->add($path, $controller, $method, 'DELETE');
-  }
-
-  public function patch($path, $action) {
-    $arr = explode('@', trim($action));
-    $controller = $arr[0];
-    $method = $arr[1];
-    return $this->add($path, $controller, $method, 'PATCH');
-  }
-
-  public function middleware($names) {
-    $names = is_array($names) ? $names : [$names];
-    $this->routes[count($this->routes) - 1]['middlewares'] = $names;
-    return $this;
+  public function disableCsrfProtection() {
+    $this->csrfProtection = false;
   }
 
   public function prefix($prefixPath, $callback) {
@@ -68,6 +32,32 @@ class Router {
     $this->prefixPath = $previousPrefix . $prefixPath;
     $callback($this);
     $this->prefixPath = $previousPrefix;
+  }
+
+  public function get($path, $controller, $action) {
+    return $this->add($path, $controller, $action, 'GET');
+  }
+
+  public function post($path, $controller, $action) {
+    return $this->add($path, $controller, $action, 'POST');
+  }
+
+  public function put($path, $controller, $action) {
+    return $this->add($path, $controller, $action, 'PUT');
+  }
+
+  public function delete($path, $controller, $action) {
+    return $this->add($path, $controller, $action, 'DELETE');
+  }
+
+  public function patch($path, $controller, $action) {
+    return $this->add($path, $controller, $action, 'PATCH');
+  }
+
+  public function middleware($names) {
+    $names = is_array($names) ? $names : [$names];
+    $this->routes[count($this->routes) - 1]['middlewares'] = $names;
+    return $this;
   }
 
   public function route() {
@@ -92,14 +82,40 @@ class Router {
       if ($path === $route['path']) {
         // Check if the route method matches
         if (isset($_SERVER['_method']) && trim($_SERVER['_method']) != '') {
-          if (trim($_SERVER['_method']) !== $route['requestMethod']) {
-            $methodMatch = false;
-            continue;
-          }
+          $serverRequestMethod = trim($_SERVER['_method']);
         } else {
-          if ($_SERVER['REQUEST_METHOD'] !== $route['requestMethod']) {
-            $methodMatch = false;
-            continue;
+          $serverRequestMethod = $_SERVER['REQUEST_METHOD'];
+        }
+        if ($serverRequestMethod !== $route['requestMethod']) {
+          $methodMatch = false;
+          continue;
+        }
+
+        $controllerClass = $route['controller'];
+        $action = $route['action'];
+
+        $controller = new $controllerClass();
+
+        // Call the action method on the controller instance
+        if (!method_exists($controller, $action)) {
+          http_response_code(500);
+          echo json_encode(['message' => 'The controller has no such method']);
+          return;
+        }
+
+        // check csrf token
+        $csrfAllowedMethods = ['POST', 'PATCH', 'PUT', 'DELETE'];
+        if ($this->csrfProtection && in_array(strtoupper($serverRequestMethod), $csrfAllowedMethods)) {
+          if (
+            isset($_POST['_csrf_token']) &&
+            Session::has('_csrf_token') &&
+            $_POST['_csrf_token'] === Session::get('_csrf_token')
+          ) {
+            // pass
+          } else {
+            http_response_code(419);
+            echo json_encode(['message' => 'Page expired']);
+            return;
           }
         }
 
@@ -124,27 +140,7 @@ class Router {
           }
         }
 
-        $controllerName = $route['controller'];
-        $action = $route['action'];
-
-        // Require the controller file
-        if (!file_exists(BASE_PATH . '/src/App/Controllers/' . $controllerName . '.php')) {
-          http_response_code(404);
-          echo json_encode(['message' => 'The requested controller is not found']);
-          return;
-        }
-        require_once BASE_PATH . '/src/App/Controllers/' . $controllerName . '.php';
-
-        // Create an instance of the controller
-        $className = 'MintBerry\\App\\Controllers\\' . $controllerName;
-        $controller = new $className();
-
-        // Call the action method on the controller instance
-        if (!method_exists($controller, $action)) {
-          http_response_code(404);
-          echo json_encode(['message' => 'The controller has no such method']);
-          return;
-        }
+        // everything is fine, call the action method
         $controller->$action();
         return;
       }
