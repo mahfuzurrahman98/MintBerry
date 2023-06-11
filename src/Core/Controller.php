@@ -2,10 +2,14 @@
 
 namespace MintBerry\Core;
 
+use MintBerry\Core\Session;
+
 
 class Controller {
+  public function __construct() {
+    Session::start();
+  }
   protected function model($model) {
-    echo 'Model: ' . $model;
     require_once '../app/models/' . $model . '.php';
     return new $model();
   }
@@ -23,6 +27,8 @@ class Controller {
   }
 
   public function __destruct() {
-    Session::forget('csrf_token');
+    if (Session::has('csrf_token')) {
+      Session::forget('csrf_token');
+    }
   }
 }
