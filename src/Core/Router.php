@@ -3,9 +3,9 @@
 namespace MintBerry\Core;
 
 class Router {
-  protected $routes;
-  protected $prefixPath = '';
-  protected $csrfProtection = true;
+  private $routes;
+  private $prefixPath = '';
+  private $csrfProtection = true;
 
   public function __construct() {
     $this->routes = [];
@@ -79,7 +79,7 @@ class Router {
 
     foreach ($this->routes as $route) {
       // Check if the route matches the current request
-      if ($path === $route['path']) {
+      if ($path === $route['path'] || $path . '/' === $route['path']) {
         // Check if the route method matches
         if (isset($_SERVER['_method']) && trim($_SERVER['_method']) != '') {
           $serverRequestMethod = trim($_SERVER['_method']);
