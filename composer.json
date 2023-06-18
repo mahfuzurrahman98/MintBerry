@@ -1,5 +1,5 @@
 {
-    "name": "mintberry-framowork",
+    "name": "mahfuz/mintberry-framework",
     "type": "project",
     "autoload": {
         "psr-4": {

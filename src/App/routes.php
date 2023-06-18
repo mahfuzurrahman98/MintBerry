@@ -5,8 +5,6 @@ use MintBerry\App\Controllers\ProductController;
 
 $router = new Router();
 
-// $router->get('/test', 'ProductController@test');
-// $router->post('/post-req', 'ProductController@postRreq');
 
 $router->prefix('/products', function ($router) {
   $router->get('/index', ProductController::class, 'index');
