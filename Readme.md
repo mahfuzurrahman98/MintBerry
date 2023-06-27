@@ -29,7 +29,7 @@ To get started with the PHP MVC Framework, follow the steps below.
 
 Ensure that your system meets the following requirements before installing the PHP MVC Framework:
 
-- PHP 7.4 or later
+- PHP 8 or later
 - Apache or Nginx web server
 - Composer
 
@@ -67,7 +67,11 @@ The routing in the PHP MVC Framework is handled by the `Router` class. Routes ca
 
 `use App\Controllers\HomeController;  `
 
-`$router->get('/', HomeController::class, 'index');  $router->get('/about', HomeController::class, 'about');  $router->post('/contact', HomeController::class, 'contact');`
+`$router->get('/', HomeController::class, 'index');  `
+
+`$router->get('/about', HomeController::class, 'about');  `
+
+`$router->post('/contact', HomeController::class, 'contact');`
 
 ## Controllers
 
