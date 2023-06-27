@@ -19,7 +19,6 @@ This documentation provides an overview and guide for using the MintBerry Framew
 - [Authentication](#authentication)
 - [Validation](#validation)
 - [Error Handling](#error-handling)
-- [Testing](#testing)
 - [Deployment](#deployment)
 
 ## Getting Started
@@ -72,7 +71,7 @@ The routing in the PHP MVC Framework is handled by the `Router` class. Routes ca
 
 ## Controllers
 
-Controllers in the PHP MVC Framework handle the logic and data flow of your application. They interact with models to retrieve and manipulate data, and render views to display the final output. Controllers should be placed in the `app/Controllers` directory.
+Controllers in the PHP MVC Framework handle the logic and data flow of your application. They interact with models to retrieve and manipulate data and render views to display the final output. Controllers should be placed in the `app/Controllers` directory.
 
 ## Models
 
@@ -104,4 +103,4 @@ Error handling in the PHP MVC Framework is centralized in the `ErrorHandler` cla
 
 ## Deployment
 
-To deploy your PHP MVC Framework application, ensure that the server meets the framework's requirements. Configure the web server to point to the `public` directory of your application. Set the appropriate file permissions and ensure that the necessary dependencies are installed.
+To deploy your PHP MVC Framework application, ensure that the server meets the framework's requirements. Configure the web server to point to the `public` directory of your application. Set the appropriate file permissions and ensure that the necessary dependencies are installed. In case of shared hosting mention the directory name as `APP_ROOT` on `.env` file.
