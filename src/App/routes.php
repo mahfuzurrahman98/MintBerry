@@ -7,6 +7,7 @@ $router = new Router();
 
 
 $router->prefix('/products', function ($router) {
+  $router->disableCsrfProtection();
   $router->get('/index', ProductController::class, 'index');
   $router->get('/show', ProductController::class, 'show');
   $router->post('/store', ProductController::class, 'store');

@@ -12,13 +12,27 @@ class Validator {
     $this->rules = $rules;
   }
 
-  /* This is the format how we set a    daata to validate
+  /*
+  // expected format of rules with the attribute name and expected value
+  type: int | string | char | array | float | bool | alpha | alpha_num | email
+  required: true | false
+  between: [min, max]
+  length_between: [min, max]
+  regex: expression
+  unique: [[table, column, except], [table, column, except]]  
+  
+  */
+
+  /* This is the format how we set a daata to validate
   $rules = [
       'sku' => [
+        'type' => ['alpha_num', 'The SKU must be alphanumeric.']
         'required' => true,
         'between' => [3, 255],
       ],
       'name' => [
+        'type' => 'string',
+        'unique' => ['products', 'name'],
         'required' => true,
         'between' => [3, 255],
       ],
@@ -33,162 +47,64 @@ class Validator {
     ];
     */
 
-  public function required($field) {
-    if (empty($this->data[$field])) {
-      $this->errors[$field][] = 'The ' . $field . ' field is required';
-    }
-  }
+private function handleType($attribute, $value, $fieldData) {
+  // pass
+}
 
-  public function between($field, $range) {
-    $min = $range[0];
-    $max = $range[1];
-    $value = $this->data[$field];
+private function handleRequired($attribute, $value, $fieldData) {
+  // pass
+}
 
-    if (strlen($value) < $min || strlen($value) > $max) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be between ' . $min . ' and ' . $max . ' characters';
-    }
-  }
+private function handleBetween($attribute, $value, $fieldData) {
+  // pass
+}
 
-  public function numeric($field) {
-    if (!is_numeric($this->data[$field])) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be a number';
-    }
-  }
+private function handleLengthBetween($attribute, $value, $fieldData) {
+  // pass
+}
 
-  public function email($field) {
-    if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be a valid email address';
-    }
-  }
+private function handleRegex($attribute, $value, $fieldData) {
+  // pass
+}
 
-  // public function unique($field, $table) {
-  //   $value = $this->data[$field];
-  //   $query = "SELECT * FROM $table WHERE $field = '$value'";
-  //   $result = Database::query($query);
+private function handleUnique($attribute, $value, $fieldData) {
+  // pass
+}
 
-  //   if ($result->num_rows > 0) {
-  //     $this->errors[$field][] = 'The ' . $field . ' field must be unique';
-  //   }
-  // }
+private function handleNumeric($attribute, $value, $fieldData) {
+  // pass
+}
 
-  public function file($field, $value) {
-    if (!isset($_FILES[$field])) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be a file';
-    }
-  }
+private function handleAlpha($attribute, $value, $fieldData) {
+  // pass
+}
 
-  public function image($field, $value) {
-    $file = $_FILES[$field];
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+private function handleAlphaNum($attribute, $value, $fieldData) {
+  // pass
+}
 
-    if (!in_array($file['type'], $allowedTypes)) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be an image';
-    }
-  }
+private function handleEmail($attribute, $value, $fieldData) {
+  
 
-  public function min($field, $value) {
-    $min = $value;
-    $length = strlen($this->data[$field]);
+  public function run() {
+    echo '<pre>';
+    foreach ($this->rules as $field => $constraints) {
+      // print_r($constraints);
 
-    if ($length < $min) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be at least ' . $min . ' characters';
-    }
-  }
+      // $constraints isa asscociative array consist of attribute as key and 
+      // respective values which is another array(with value at first index and custom error message at second index) or any other type
+      // if it is not an array then we convert it to array
 
-  public function max($field, $value) {
-    $max = $value;
-    $length = strlen($this->data[$field]);
-
-    if ($length > $max) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be at most ' . $max . ' characters';
-    }
-  }
-
-  public function confirmed($field) {
-    $value = $this->data[$field];
-    $confirmedValue = $this->data[$field . '_confirmation'];
-
-    if ($value !== $confirmedValue) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be confirmed';
-    }
-  }
-
-  public function mimes($field, $value) {
-    $file = $_FILES[$field];
-    $allowedTypes = $value;
-
-    if (!in_array($file['type'], $allowedTypes)) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be a file of type ' . implode(', ', $allowedTypes);
-    }
-  }
-
-  public function in($field, $value) {
-    $allowedValues = $value;
-    $value = $this->data[$field];
-
-    if (!in_array($value, $allowedValues)) {
-      $this->errors[$field][] = 'The ' . $field . ' field must be one of the following: ' . implode(', ', $allowedValues);
-    }
-  }
-
-  public function not_in($field, $value) {
-    $disallowedValues = $value;
-    $value = $this->data[$field];
-
-    if (in_array($value, $disallowedValues)) {
-      $this->errors[$field][] = 'The ' . $field . ' field must not be one of the following: ' . implode(', ', $disallowedValues);
-    }
-  }
-
-  public function errors() {
-    return $this->errors;
-  }
-
-  public function validate() {
-    foreach ($this->rules as $field => $rules) {
-      foreach ($rules as $rule => $value) {
-        switch ($rule) {
-          case 'required':
-            $this->required($field);
-            break;
-          case 'between':
-            $this->between($field, $value);
-            break;
-          case 'numeric':
-            $this->numeric($field);
-            break;
-          case 'email':
-            $this->email($field);
-            break;
-            // case 'unique':
-            //   $this->unique($field, $value);
-            //   break;
-          case 'file':
-            $this->file($field, $value);
-            break;
-          case 'image':
-            $this->image($field, $value);
-            break;
-          case 'min':
-            $this->min($field, $value);
-            break;
-          case 'max':
-            $this->max($field, $value);
-            break;
-          case 'confirmed':
-            $this->confirmed($field);
-            break;
-          case 'mimes':
-            $this->mimes($field, $value);
-            break;
-          case 'in':
-            $this->in($field, $value);
-            break;
-          case 'not_in':
-            $this->not_in($field, $value);
-            break;
+      echo 'for ' . $field . ':<br>----------<br>';
+      foreach ($constraints as $attribute => $value) {
+        // echo $attribute .  '<br>';
+        if (!is_array($value)) {
+          $constraints[$attribute] = [$value, ''];
         }
+
+        print_r($constraints[$attribute]);
       }
+      echo '<br><br>';
     }
   }
 }

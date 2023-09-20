@@ -3,10 +3,11 @@
 namespace MintBerry\App\Controllers;
 
 use MintBerry\Core\Request;
+use MintBerry\Core\Session;
+use MintBerry\Core\Validator;
+use MintBerry\Core\Controller;
 use MintBerry\Core\JSONResponse;
 use MintBerry\App\Models\Product;
-use MintBerry\Core\Controller;
-use MintBerry\Core\Session;
 
 class ProductController extends Controller {
   use JSONResponse;
@@ -67,11 +68,31 @@ class ProductController extends Controller {
     $request = new Request();
 
     $rules = [
-      'sku' => 'required|min:3|max:255|unique:products',
-      'name' => 'required|min:3|max:255',
-      'price' => 'required|numeric',
-      'description' => 'required|min:3|max:255'
+      'sku' => [
+        'type' => ['alpha_num', 'The SKU must be alphanumeric.'],
+        'required' => true,
+        'between' => [3, 255],
+      ],
+      'name' => [
+        'type' => 'string',
+        'unique' => ['products', 'name'],
+        'required' => true,
+        'between' => [3, 255],
+      ],
+      'price' => [
+        'required' => true,
+        'numeric' => true,
+      ],
+      'description' => [
+        'required' => true,
+        'between' => [3, 255],
+      ],
+      
     ];
+
+    $validator = new Validator($request->getBody(), $rules);
+    $validator->run();
+    die();
 
     try {
       $product = $this->model->create($request->getBody());
