@@ -70,14 +70,14 @@ class ProductController extends Controller {
     $rules = [
       'sku' => [
         'type' => ['alpha_num', 'The SKU must be alphanumeric.'],
-        'required' => true,
-        'between' => [3, 255],
+        'required' => [true, 'SKU is required.'],
+        'between' => '3,255',
       ],
       'name' => [
         'type' => 'string',
         'unique' => ['products', 'name'],
         'required' => true,
-        'between' => [3, 255],
+        'between' => '3,255',
       ],
       'price' => [
         'required' => true,
@@ -85,14 +85,14 @@ class ProductController extends Controller {
       ],
       'description' => [
         'required' => true,
-        'between' => [3, 255],
+        'between' => '3,255',
       ],
-      
     ];
 
     $validator = new Validator($request->getBody(), $rules);
     $validator->run();
-    die();
+
+    $this->send(200, $validator->getErrors());
 
     try {
       $product = $this->model->create($request->getBody());
