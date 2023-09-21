@@ -71,21 +71,22 @@ class ProductController extends Controller {
       'sku' => [
         'type' => ['alpha_num', 'The SKU must be alphanumeric.'],
         'required' => [true, 'SKU is required.'],
-        'between' => '3,255',
+        'length_between' => '3,255',
       ],
       'name' => [
         'type' => 'string',
         'unique' => ['products', 'name'],
         'required' => true,
-        'between' => '3,255',
+        'length_between' => '3,255',
       ],
       'price' => [
-        'required' => true,
-        'numeric' => true,
+        'type' => 'numeric',
+        'required' => false,
+        'between' => '14,16'
       ],
       'description' => [
-        'required' => true,
-        'between' => '3,255',
+        'required' => false,
+        'length_between' => '3,255',
       ],
     ];
 
@@ -110,7 +111,7 @@ class ProductController extends Controller {
       if (!$request->hasQueryParam('id')) {
         $this->send(400, 'Missing id query parameter');
       }
-
+     
       $id = $request->getQueryParam('id');
       $data = $this->model->find($id);
 
