@@ -70,66 +70,91 @@ class Validator {
     // pass
   }
 
-  private function handleRequired($constraints, $field) {
-    if (!isset($this->data->$field)) {
-      $this->errors[$field] = $constraints[1] ?? 'The field is required.';
-      return;
+  private function handleRequired($constraints, $field): string {
+    $errorMsg = $constraints[1] ?? 'The field is required.';
+
+    if ($constraints[0] === true) {
+      if (!isset($this->data->$field)) {
+        return $errorMsg;
+      }
+
+      $fieldData = $this->data->$field;
+      if (!isset($fieldData) || empty($fieldData)) {
+        return $errorMsg;
+      }
     }
 
-    $fieldData = $this->data->$field;
-    $errorMsg = $constraints[1] ?? 'The field is required.';
-    if (!isset($fieldData) || empty($fieldData)) {
-      $this->errors[$field] = $errorMsg;
-    }
+    return '';
   }
 
-  private function handleBetween($constraints, $field) {
-    /*
-    a sample data is of $constraints
-    array(2) {
-  [0]=>
-  string(5) "3,255"
-  [1]=>
-  NULL or a message
-}
-    */
-
+  private function handleBetween($constraints, $field): string {
     // first check the $constraints[0] is a string and has value
     if (!isset($constraints[0]) || empty($constraints[0])) {
-      $this->errors[$field] = 'Provide the min and max in comma separated format.';
-      return;
+      return 'Provide the min and max in comma separated format.';
     }
     // trim the value
     $value = trim($constraints[0]);
     // now make sure the value is in the format of min,max they are integers and min < max and it is exactly 2 values comma separated
     $value = explode(',', $value);
     if (count($value) != 2) {
-      $this->errors[$field] = 'Provide the min and max in comma separated format.';
-      return;
+      return 'Provide the min and max in comma separated format.';
     }
 
     // if the value is not an integer then throw an error
     if (!is_numeric($value[0]) || !is_numeric($value[1])) {
-      $this->errors[$field] = 'Provide the min and max in comma separated format.';
-      return;
+      return 'The min and max must be integers.';
     }
 
     // if the min is greater than max then throw an error
     if ($value[0] > $value[1]) {
-      $this->errors[$field] = 'The min value must be less than max value.';
-      return;
+      return 'The min value must be less than max value.';
     }
 
     // now check the value of the field is between the min and max
-    $fieldData = $this->data->$field;
-    if (!isset($fieldData) || empty($fieldData)) {
-      $this->errors[$field] = 'The field is required.';
-      return;
+    if (property_exists($this->data, $field)) {
+      $fieldData = $this->data->$field;
+
+      if ($fieldData < $value[0] || $fieldData > $value[1]) {
+        return 'The field must be between ' . $value[0] . ' and ' . $value[1] . '.';
+      }
     }
+
+    return '';
   }
 
-  private function handleLengthBetween($constraints, $field) {
-    // pass
+  private function handleLengthBetween($constraints, $field): string {
+    // first check the $constraints[0] is a string and has value
+    if (!isset($constraints[0]) || empty($constraints[0])) {
+      return 'Provide the min and max length in comma separated format.';
+    }
+    // trim the value
+    $value = trim($constraints[0]);
+    // now make sure the value is in the format of min,max they are integers and min < max and it is exactly 2 values comma separated
+    $value = explode(',', $value);
+    if (count($value) != 2) {
+      return 'Provide the min and max length in comma separated format.';
+    }
+
+    // if the value is not an integer then throw an error
+    if (!is_numeric($value[0]) || !is_numeric($value[1])) {
+      return 'The min and max length must be integers.';
+    }
+
+    // if the min is greater than max then throw an error
+    if ($value[0] > $value[1]) {
+      return 'The min value must be less than max value.';
+    }
+
+    // now check the value of the field is between the min and max
+    if (property_exists($this->data, $field)) {
+      $fieldData = $this->data->$field;
+
+      if (strlen($fieldData) < $value[0] || strlen($fieldData) > $value[1]) {
+        return 'The field length must be between ' . $value[0] . ' and ' . $value[1] . '.';
+      }
+    }
+
+    return '';
   }
 
   private function handleRegex($constraints, $field) {
@@ -140,24 +165,28 @@ class Validator {
     // pass
   }
 
-  private function handleAttributeValidation($attribute, $constraints, $field) {
-    if ($attribute == 'type') {
-      $this->handleType($constraints, $field);
-    } else  if ($attribute == 'required') {
-      $this->handleRequired($constraints, $field);
+  private function handleAttributeValidation($attribute, $constraints, $field): string {
+    // if ($attribute == 'type') {
+    //   $this->handleType($constraints, $field);
+    // } else 
+    if ($attribute == 'required') {
+      return $this->handleRequired($constraints, $field);
     } else if ($attribute == 'between') {
-      $this->handleBetween($constraints, $field);
+      return $this->handleBetween($constraints, $field);
     } else if ($attribute == 'length_between') {
-      $this->handleLengthBetween($constraints, $field);
-    } else if ($attribute == 'regex') {
-      $this->handleRegex($constraints, $field);
+     return $this->handleLengthBetween($constraints, $field);
     }
+    // else if ($attribute == 'regex') {
+    //   $this->handleRegex($constraints, $field);
+    // }
     // else if ($attribute == 'unique') {
     //   $this->handleUnique($constraints, $field);
     // }
+
+    return '';
   }
 
-  public function run() {
+  public function run(): void {
     foreach ($this->rules as $field => $constraints) {
 
       // make sure the required constraint is always first
@@ -172,11 +201,18 @@ class Validator {
           $constraints[$attribute] = [$constraints[$attribute], null];
         }
 
-        $this->handleAttributeValidation(
+        $errorMsg = $this->handleAttributeValidation(
           $attribute,
           $constraints[$attribute],
           $field
         );
+
+        if ($errorMsg) {
+          if (!isset($this->errors[$field])) {
+            $this->errors[$field] = $errorMsg;
+          }
+        }
+        // return;
       }
     }
   }
