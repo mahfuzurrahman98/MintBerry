@@ -82,7 +82,7 @@ class ProductController extends Controller {
       'price' => [
         'type' => 'numeric',
         'required' => false,
-        'between' => '14,16'
+        'between' => '7,16'
       ],
       'description' => [
         'required' => false,
@@ -111,7 +111,7 @@ class ProductController extends Controller {
       if (!$request->hasQueryParam('id')) {
         $this->send(400, 'Missing id query parameter');
       }
-     
+
       $id = $request->getQueryParam('id');
       $data = $this->model->find($id);
 
