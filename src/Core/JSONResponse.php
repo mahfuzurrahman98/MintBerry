@@ -3,7 +3,7 @@
 namespace MintBerry\Core;
 
 trait JSONResponse {
-  public static function send($statusCode, $message, $data = null) {
+  public static function respondJSON($statusCode, $message, $data = null) {
     header('Content-Type: application/json');
     http_response_code($statusCode);
 
