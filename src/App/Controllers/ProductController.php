@@ -22,9 +22,9 @@ class ProductController extends Controller {
   public function index() {
     $request = new Request();
     try {
-      $this->send(200, 'ProductController@index', $this->model->all());
+      $this->respondJSON(200, 'ProductController@index', $this->model->all());
     } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
+      $this->respondJSON(500, $e->getMessage());
     }
 
     // $products = $this->model->all();
@@ -40,19 +40,19 @@ class ProductController extends Controller {
 
     try {
       if (!$request->hasQueryParam('id')) {
-        $this->send(400, 'Missing id query parameter');
+        $this->respondJSON(400, 'Missing id query parameter');
       }
 
       $id = $request->getQueryParam('id');
       $data = $this->model->find($id);
 
       if (!$data) {
-        $this->send(404, 'Product not found');
+        $this->respondJSON(404, 'Product not found');
       }
 
-      $this->send(200, 'Product fetched successfully', $data);
+      $this->respondJSON(200, 'Product fetched successfully', $data);
     } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
+      $this->respondJSON(500, $e->getMessage());
     }
   }
 
@@ -93,13 +93,13 @@ class ProductController extends Controller {
     $validator = new Validator($request->getBody(), $rules);
     $validator->run();
 
-    $this->send(200, $validator->getErrors());
+    $this->respondJSON(200, $validator->getErrors());
 
     try {
       $product = $this->model->create($request->getBody());
-      $this->send(200, 'Product created successfully', $product);
+      $this->respondJSON(200, 'Product created successfully', $product);
     } catch (\Exception $e) {
-      $this->send(500, $e->getTraceAsString());
+      $this->respondJSON(500, $e->getTraceAsString());
     }
   }
 
@@ -109,20 +109,20 @@ class ProductController extends Controller {
 
     try {
       if (!$request->hasQueryParam('id')) {
-        $this->send(400, 'Missing id query parameter');
+        $this->respondJSON(400, 'Missing id query parameter');
       }
 
       $id = $request->getQueryParam('id');
       $data = $this->model->find($id);
 
       if (!$data) {
-        $this->send(404, 'Product not found');
+        $this->respondJSON(404, 'Product not found');
       }
 
       $this->model->update($id, $request->getBody());
-      $this->send(200, 'Product updated successfully', $request->getBody());
+      $this->respondJSON(200, 'Product updated successfully', $request->getBody());
     } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
+      $this->respondJSON(500, $e->getMessage());
     }
   }
 
@@ -132,20 +132,20 @@ class ProductController extends Controller {
 
     try {
       if (!$request->hasQueryParam('id')) {
-        $this->send(400, 'Missing id query parameter');
+        $this->respondJSON(400, 'Missing id query parameter');
       }
 
       $id = $request->getQueryParam('id');
       $data = $this->model->find($id);
 
       if (!$data) {
-        $this->send(404, 'Product not found');
+        $this->respondJSON(404, 'Product not found');
       }
 
       $this->model->delete($id);
-      $this->send(200, 'Product deleted successfully');
+      $this->respondJSON(200, 'Product deleted successfully');
     } catch (\Exception $e) {
-      $this->send(500, $e->getMessage());
+      $this->respondJSON(500, $e->getMessage());
     }
   }
 
