@@ -8,9 +8,9 @@ $router = new Router();
 
 $router->prefix('/products', function ($router) {
   $router->disableCsrfProtection();
-  $router->get('/index', ProductController::class, 'index');
+  $router->get('/', ProductController::class, 'index');
   $router->get('/show', ProductController::class, 'show');
-  $router->post('/store', ProductController::class, 'store');
-  $router->put('/update', ProductController::class, 'update');
-  $router->delete('/delete', ProductController::class, 'delete');
+  $router->post('/', ProductController::class, 'store');
+  $router->put('/', ProductController::class, 'update');
+  $router->delete('/', ProductController::class, 'delete');
 });
